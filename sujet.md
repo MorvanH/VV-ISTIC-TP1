@@ -11,3 +11,26 @@
 5.  Shortly after the appearance of WebAssembly another paper proposed a mechanized specification of the language using Isabelle. The paper can be consulted here: https://www.cl.cam.ac.uk/~caw77/papers/mechanising-and-verifying-the-webassembly-specification.pdf. This mechanized specification complements the first formalization attempt from the paper. According to the author of this second paper, what are the main advantages of the mechanized specification? Did it help improving the original formal specification of the language? What other artifacts were derived from this mechanized specification? How did the author verify the specification? Does this new specification removes the need for testing?
 
 ## Answers
+
+1. Bug : HeartBleed
+
+The HeartBleed vulerability is based on the HeartBeat system in a connection, a message sent by the client or the server and the other have to repeat it to make sure the connection is still viable. The bug take place in OpenSSL, an open-source implementation of TLS protocol. The developper forgot to check the data received, the size asked for the respond do not match the real size of the message sent as HeatBeat. This is a local bug. The server will send more data then necessary and the gap between the message send by the client and the message sent by the server will be filled by data in the server memory. It could be crtitical data as password or confidential files.
+With this bug, every server using this implementation of TLS is in range of random leaks of data. As the problem is just a missmatch between a message and his size, a simple test would revealed the vulnerability.
+
+
+
+2. https://issues.apache.org/jira/browse/COLLECTIONS-796
+
+SetUniqueList.createSetBasedOnList doesn't add list elements to the return value any more. The documentation says it does, and it used to up to version 4.2, but a call to `addAll` was accidentally deleted. This is a local bug. The [PR] (https://github.com/apache/commons-collections/pull/255) brings back the call to `addAll` and add few tests to ensure the call will not be removed anymore.
+
+
+
+3. Concrete experiments: Netflix conducts experiments involving various scenarios like terminating virtual machine instances, injecting latency into service requests, and simulating Amazon region outages to test system resilience.
+Requirements: These experiments demand highly resilient systems capable of withstanding failures without significant disruptions to user experience.
+Observed variables: Metrics like SPS (stream starts per second) are key indicators, assessing if failures in specific services impact critical metrics and if the system gracefully handles stress.
+Main results: The paper doesn't detail specific experiment results but emphasizes the importance of system resilience and degradation analysis during simulated failures. All big tech compagny seems to use this method to test the resilience (Google, Amazon, Microsoft, etc...).
+  Speculation for other organizations: Experiments could involve scenarios relevant to their services, observing metrics like transaction completion rates or response times to assess system behavior and resilience. Variables observed should reflect critical aspects of the system's functionality and performance. Each organization would adapt Chaos Engineering based on its unique system requirements and user expectations.
+
+
+
+4. 
