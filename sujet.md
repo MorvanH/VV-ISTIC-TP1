@@ -33,4 +33,9 @@ Main results: The paper doesn't detail specific experiment results but emphasize
 
 
 
-4. 
+4. A formal specification for WebAssembly ensures interoperable compatibility, enables rigorous validation and verification processes, facilitates language evolution while maintaining consistency and erased all sources of ambiguity.
+For us, that do not mean we should not test the code at all, it should only ease the developpement of the code and the test.
+
+
+
+5. Mechanized specification ensure that two components will be compatible to using it and not rely on human. It do not improve the specification of the language, it only enforce it. As the program has provided a mathemaical proof of his execution, no test is needed. But we need to be sure the program do what we need, we could have a proof of something working but having counter productive effects.
