@@ -14,28 +14,33 @@
 
 1. Bug : HeartBleed
 
-The HeartBleed vulerability is based on the HeartBeat system in a connection, a message sent by the client or the server and the other have to repeat it to make sure the connection is still viable. The bug take place in OpenSSL, an open-source implementation of TLS protocol. The developper forgot to check the data received, the size asked for the respond do not match the real size of the message sent as HeatBeat. This is a local bug. The server will send more data then necessary and the gap between the message send by the client and the message sent by the server will be filled by data in the server memory. It could be crtitical data as password or confidential files.
-With this bug, every server using this implementation of TLS is in range of random leaks of data. As the problem is just a missmatch between a message and his size, a simple test would revealed the vulnerability.
+The HeartBleed vulnerability exploits a bug in theOpenSSL library. The bug is in the implementation of the HeartBeat 
+protocol. This protocol is used to check if the connection is still alive. The client send a message to the server and the server respond with the same message.
 
+However, if the client send a message with a size smaller than the real size of the message, the server will send 
+the message asked by the client and the data in the server memory until the real size of the message. The client 
+will receive more data than asked and the gap between the message sent by the client and the message sent by the 
+server will be filled by data in the server memory. That data could be confidential (password, files, etc...).
 
+The extent of the damages caused by heartbleed is hard to evaluate. The bug was patched quickly after it was 
+discovered but known to be exploitable for at least 2 years.
 
-2. https://issues.apache.org/jira/browse/COLLECTIONS-796
+The bug is local, it is in the implementation of the HeartBeat protocol. The failure is a leak of data. The bug 
+could have been discovered by testing the right scenario.
 
-SetUniqueList.createSetBasedOnList doesn't add list elements to the return value any more. The documentation says it does, and it used to up to version 4.2, but a call to `addAll` was accidentally deleted. This is a local bug. The [PR] (https://github.com/apache/commons-collections/pull/255) brings back the call to `addAll` and add few tests to ensure the call will not be removed anymore.
-
-
+2. https://issues.apache.org/jira/browse/COLLECTIONS-796. SetUniqueList.createSetBasedOnList doesn't add list elements to the return value anymore. The documentation says it does, and it used to up to version 4.2, but a call to `addAll` was accidentally deleted. This is a local bug. The [PR] (https://github.com/apache/commons-collections/pull/255) brings back the call to `addAll` and add few tests to ensure the call will not be removed anymore.
 
 3. Concrete experiments: Netflix conducts experiments involving various scenarios like terminating virtual machine instances, injecting latency into service requests, and simulating Amazon region outages to test system resilience.
 Requirements: These experiments demand highly resilient systems capable of withstanding failures without significant disruptions to user experience.
 Observed variables: Metrics like SPS (stream starts per second) are key indicators, assessing if failures in specific services impact critical metrics and if the system gracefully handles stress.
-Main results: The paper doesn't detail specific experiment results but emphasizes the importance of system resilience and degradation analysis during simulated failures. All big tech compagny seems to use this method to test the resilience (Google, Amazon, Microsoft, etc...).
+Main results: The paper doesn't detail specific experiment results but emphasizes the importance of system 
+   resilience and degradation analysis during simulated failures. Most companies seems to use this method to test the 
+   resilience of their systems.
   Speculation for other organizations: Experiments could involve scenarios relevant to their services, observing metrics like transaction completion rates or response times to assess system behavior and resilience. Variables observed should reflect critical aspects of the system's functionality and performance. Each organization would adapt Chaos Engineering based on its unique system requirements and user expectations.
 
+4. A formal specification for WebAssembly ensures interoperable compatibility, enables rigorous validation and 
+   verification processes, facilitates language evolution while maintaining consistency and erased all sources of 
+   ambiguity. This does not mean that WebAssembly implementations should not be tested at all.
 
-
-4. A formal specification for WebAssembly ensures interoperable compatibility, enables rigorous validation and verification processes, facilitates language evolution while maintaining consistency and erased all sources of ambiguity.
-For us, that do not mean we should not test the code at all, it should only ease the developpement of the code and the test.
-
-
-
-5. Mechanized specification ensure that two components will be compatible to using it and not rely on human. It do not improve the specification of the language, it only enforce it. As the program has provided a mathemaical proof of his execution, no test is needed. But we need to be sure the program do what we need, we could have a proof of something working but having counter productive effects.
+5. Mechanized specification ensure that two components have to be compatible with each-others and not rely on human 
+   intervention. It doesn't improve the specification of the language, it only enforces it. As the program is proven, it doesn't need to be tested. 
